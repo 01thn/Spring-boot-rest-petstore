@@ -1,10 +1,11 @@
 package com.thn.restpetstore.controller;
 
-import com.thn.restpetstore.dao.InMemoryUserDao;
 import com.thn.restpetstore.entity.User;
+import com.thn.restpetstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -14,20 +15,17 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private InMemoryUserDao inMemoryUserDao;
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<User> saveNewUser(@RequestBody User newUser) {
-        User user = inMemoryUserDao.saveUser(newUser);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
+        User user = userService.save(newUser);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        Optional<User> user = inMemoryUserDao.getUserByUsername(username);
+        Optional<User> user = userService.findUserByUsername(username);
         if (user.isPresent()) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
         }
@@ -35,10 +33,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
-    public ResponseEntity<User> deleteUserByUsername(@PathVariable String username){
-        Optional<User> user = inMemoryUserDao.deleteUserByUsername(username);
+    @Transactional
+    public ResponseEntity<?> deleteUserByUsername(@PathVariable String username) {
+        userService.deleteByUsername(username);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<User> updateUser(@PathVariable String username,
+                                           @RequestBody User newUser) {
+        Optional<User> user = userService.findUserByUsername(username);
         if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+            newUser.setId(user.get().getId());
+            User updUser = userService.save(newUser);
+            return ResponseEntity.ok(updUser);
         }
         return ResponseEntity.badRequest().build();
     }
