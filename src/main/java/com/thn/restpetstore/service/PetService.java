@@ -4,6 +4,7 @@ import com.thn.restpetstore.entity.Pet;
 import com.thn.restpetstore.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class PetService {
         return petRepository.findPetById(id);
     }
 
+    @Transactional
     public void deletePetById(long id) {
         petRepository.deletePetById(id);
     }

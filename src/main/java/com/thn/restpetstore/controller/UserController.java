@@ -5,7 +5,6 @@ import com.thn.restpetstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -18,13 +17,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> saveNewUser(@RequestBody User newUser) {
+    public ResponseEntity<User> save(@RequestBody User newUser) {
         User user = userService.save(newUser);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+    public ResponseEntity<User> find(@PathVariable String username) {
         Optional<User> user = userService.findUserByUsername(username);
         if (user.isPresent()) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
@@ -33,15 +32,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
-    @Transactional
-    public ResponseEntity<?> deleteUserByUsername(@PathVariable String username) {
+    public ResponseEntity<?> delete(@PathVariable String username) {
         userService.deleteByUsername(username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<User> updateUser(@PathVariable String username,
-                                           @RequestBody User newUser) {
+    public ResponseEntity<User> update(@PathVariable String username,
+                                       @RequestBody User newUser) {
         Optional<User> user = userService.findUserByUsername(username);
         if (user.isPresent()) {
             newUser.setId(user.get().getId());
