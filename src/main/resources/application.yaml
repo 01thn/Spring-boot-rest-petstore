@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/restpet
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db/changelog/liquibase-changeLog.sql
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/pet
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 200MB

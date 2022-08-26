@@ -10,8 +10,13 @@ import java.util.Optional;
 
 @Service
 public class OrderService {
+
+    private final OrderRepository orderRepository;
+
     @Autowired
-    private OrderRepository orderRepository;
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     public Order saveNewOrder(Order order) {
         return orderRepository.save(order);
@@ -22,7 +27,12 @@ public class OrderService {
         orderRepository.deleteOrderById(id);
     }
 
-    public Optional<Order> findOrderById(Long orderId) {
+//    public OrderDTO findOrderById(Long orderId) {
+//        return orderRepository.findOrderById(orderId)
+//                .map(OrderMapper.toDTO)
+//                .orElseThrow();
+//    }
+    public Optional<Order> findOrderById(Long orderId){
         return orderRepository.findOrderById(orderId);
     }
 }

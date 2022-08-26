@@ -1,6 +1,8 @@
 package com.thn.restpetstore.controller;
 
+import com.thn.restpetstore.dto.UserDTO;
 import com.thn.restpetstore.entity.User;
+import com.thn.restpetstore.mapper.UserMapper;
 import com.thn.restpetstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,13 +15,21 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
 
+    private final UserService userService;
+
+    private final UserMapper userMapper;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService, UserMapper userMapper) {
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
 
     @PostMapping
-    public ResponseEntity<User> save(@RequestBody User newUser) {
+    public ResponseEntity<UserDTO> save(@RequestBody User newUser) {
         User user = userService.save(newUser);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        UserDTO userDto = userMapper.toUserDto(user);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/{username}")

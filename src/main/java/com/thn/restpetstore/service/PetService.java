@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Service
 public class PetService {
+    private final PetRepository petRepository;
     @Autowired
-    private PetRepository petRepository;
+    public PetService(PetRepository petRepository) {
+        this.petRepository = petRepository;
+    }
 
     public Pet saveNewPet(Pet newPet) {
         return petRepository.save(newPet);

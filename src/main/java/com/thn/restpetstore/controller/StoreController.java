@@ -2,7 +2,6 @@ package com.thn.restpetstore.controller;
 
 import com.thn.restpetstore.entity.Order;
 import com.thn.restpetstore.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +11,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/store")
 public class StoreController {
-    @Autowired
-    private OrderService orderService;
+
+    private final OrderService orderService;
+
+    public StoreController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @PostMapping("/order")
     public ResponseEntity<Order> save(@RequestBody Order order) {

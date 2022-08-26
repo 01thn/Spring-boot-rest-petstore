@@ -12,8 +12,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/pet")
 public class PetController {
+
+    private final PetService petService;
+
     @Autowired
-    private PetService petService;
+    public PetController(PetService petService) {
+        this.petService = petService;
+    }
 
     @PostMapping
     public ResponseEntity<Pet> save(@RequestBody Pet newPet) {
